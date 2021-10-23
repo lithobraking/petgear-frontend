@@ -13,7 +13,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Container>
+      <Container className='p-5'>
         <Row xs={1} md={2} className="g-4">
           {products.map((product) => (
             <Link href={`/products/${product.slug}`}>
