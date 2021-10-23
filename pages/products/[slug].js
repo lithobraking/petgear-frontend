@@ -1,9 +1,8 @@
-import products from '../../products.json';
 import Head from 'next/head';
-import { imgToUrl } from '../../utils/urls';
-const product = products[0];
+import { API_URL, imgToUrl } from '../../utils/urls';
 
-const Product = () => {
+
+const Product = ({product}) => {
     return (
         <>
             <Head>
@@ -31,3 +30,28 @@ const Product = () => {
 }
 
 export default Product;
+
+export async function getStaticProps({ params: { slug } }) {
+    const productRes = await fetch(`${API_URL}/products/?slug=${slug}`);
+    const match = await productRes.json();
+
+    return {
+        props: {
+            product: match[0]
+        }
+    }
+}
+
+export async function getStaticPaths() {
+    const productsRes = await fetch(`${API_URL}/products/`);
+    const products = await productsRes.json();
+
+    return {
+        paths: products.map(product => ({
+            params: {
+                slug: String(product.slug)
+            }
+        })),
+        fallback: false
+    }
+}
