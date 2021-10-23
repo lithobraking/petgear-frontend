@@ -1,11 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-// import styles from '../styles/Home.module.css';
-import products from '../products.json';
+import { API_URL, imgToUrl } from '../utils/urls';
 import { Card, Container, Row } from 'react-bootstrap';
 
-export default function Home() {
+export default function Home({ products }) {
   return (
     <div >
       <Head>
@@ -18,6 +17,7 @@ export default function Home() {
           {products.map((product) => (
             <Link href={`/products/${product.slug}`}>
               <Card className='m-2' style={{ width: '18rem' }}>
+                <Card.Img variant='top' src={imgToUrl(product.image)} />
                 <Card.Body>
                   <Card.Title>{product.name}</Card.Title>
                   <Card.Subtitle className='mb-2 text-muted'>${product.price}</Card.Subtitle>
@@ -30,4 +30,15 @@ export default function Home() {
       </Container>
     </div>
   )
+}
+
+export async function getStaticProps() {
+  const productRes = await fetch(`${API_URL}/products/`);
+  const products = await productRes.json();
+
+  return {
+    props: {
+      products
+    }
+  }
 }
